@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>LaunchDarkly CSV Export</title>
+		<style>
+            :root {
+                /* Grayscale colours */
+                --white: #ffffff;
+                --gray01: #f8f8f8;
+                --gray02: #e6e6e6;
+                --gray03: #d1d3d4;
+                --gray04: #bcbec0;
+                --gray05: #a7a9ac;
+                --gray06: #939598;
+                --gray07: #6d6e71;
+                --gray08: #58595b;
+                --gray09: #414042;
+                --black00: #2c2c2c;
+                --black01: #282828;
+                --black02: #212121;
+                --black03: #191919;
+                --black04: #000000;
+
+                /* Brand colours */
+                --yellow: #ebff38;
+                --blue: #405bff;
+                --pink: #ff386b;
+                --cyan: #3dd6f5;
+                --purple: #a34fde;
+
+                /* Additional */
+                --border: #d8e5ee;
+
+                /* Black/white */
+                --off-white: #f8f8f8;
+                --black: #000000;
+                --black100: #282828;
+                --black200: #212121;
+                --black300: #191919;
+                --gray100: #e6e6e6;
+                --gray200: #d1d3d4;
+                --gray300: #bcbec0;
+                --gray400: #a7a9ac;
+                --gray500: #939598;
+                --gray600: #6d6e71;
+                --gray700: #58595b;
+                --gray800: #414042;
+                --gray900: #353535;
+				--blue600: #2e3f7f;
+                /* User notification colours */
+                --success: #00da7b;
+                --warning: #eec340;
+                --error: #e83b3b;
+
+                /* Body font colour */
+                --light-text: #ffffff;
+                --dark-text: #282828;
+                --text-gradient-a: #edf4c9;
+                --text-gradient-b: #9eadf1;
+
+                /* Typography */
+                --font-primary: 'Audimat 3000';
+                --font-secondary: 'Sohne';
+            }
+            body {
+                    font-family: var(--font-secondary);
+                line-height: 1.6;
+                font-size: 12pt;
+                color: var(--dark-text);
+                background: var(--off-white);
+                margin: 20px;
+                min-width: 540px;
+            }
+			.container {
+				max-width: 800px;
+				margin: 0 auto;
+			}
+			h2 {
+				padding-top:0;
+				margin-top:0;
+			}
+			.fields-form {
+				margin-bottom: 20px;
+			}
+			label {
+				font-weight: bold;;
+			}
+			.selectors-container {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+            label[for="project-select"], label[for="env-select"] {
+                min-width: 13rem;
+            }
+            #project-select, #env-select {
+                
+                display:inline-flex;
+				flex-grow: 1;
+				min-width: max-content;
+                padding: .5rem;
+                margin: .5rem 0;
+				display:block;
+
+            }
+            
+            table,
+			th,
+			td {
+				border: 1px solid var(--gray100)
+                
+			}
+			
+			th,
+			td {
+				padding: 8px;
+				text-align: left;
+			}
+			thead tr {
+				background-color: var(--gray900);
+				color: var(--white);
+				
+			}
+			thead th {
+				border:none;
+			}
+			/* alternate row colors */
+			tbody tr:nth-child(odd) {
+				background-color: var(--white);
+			}
+			tbody tr:nth-child(even) {
+				background-color: var(--off-white);
+			}
+			details {
+				border: 1px solid var(--border);
+				border-radius: 4px;
+				padding: 0.5em 0.5em 0;
+				background-color: var(--gray01);
+				min-width: 12em;
+			}
+
+			summary {
+				font-weight: bold;
+				margin: -0.5em -0.5em 0;
+				padding: 0.5em;
+				background-color: var(--gray900);
+				color: var(--white);
+				border-radius: 4px;
+				cursor: pointer;
+			}
+
+			details[open] {
+				padding: 0.5em;
+			}
+			#exportButton {
+				
+				align-self:flex-start;
+				flex-basis: 12rem;
+    background-color: var(--blue);
+    color: var(--white);
+	font-weight: bold;;
+    border: none;
+    padding: 1em;
+    cursor: pointer;
+    font-family: var(--font-secondary);
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+#exportButton:hover {
+    background-color: var(--blue600);
+}
+
+			details[open] summary {
+				border-bottom: 1px solid var(--border);
+				margin-bottom: 0.5em;
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+			.export-container {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				margin-bottom: 20px;
+        	}
+			.spinner {
+				display: inline-block;
+                opacity: 0;
+				border: 4px solid rgba(0, 0, 0, 0.1);
+				border-left-color: var(--blue);
+				border-radius: 50%;
+				width: .5rem;
+				height: .5rem;
+				animation: spin 1s linear infinite;
+                vertical-align: middle;
+			}
+			@keyframes spin {
+				to {
+					transform: rotate(360deg);
+				}
+			}
+			#preview {
+				background-color: var(--white);
+				border: 1px solid var(--border);
+				padding: 1rem;
+				width: max-content;
+				height: max-content;
+				border-radius: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<form>
+				<div class="selectors-container">
+					<div>
+						<label for="project-select">Project:</label>
+						<select id="project-select" onchange="populateEnvironments()" placeholder="Project">
+							<!-- Projects will be populated here -->
+						</select>
+						<div id="project-spinner" class="spinner"></div>
+					</div>
+					<div>
+						<label for="env-select">Environment:</label>
+						<select id="env-select" onchange="loadFlagsAndStatuses()" placeholder="Environment">
+							<!-- Environments will be populated here -->
+						</select>
+						<div id="env-spinner" class="spinner"></div>
+					</div>
+				</div>
+				<div class="export-container">
+				
+                <details>
+                <summary>Fields</summary>
+                
+				<label><input type="checkbox" name="fields" value="key" onchange="updatePreview()" checked /> Key</label><br />
+                <label><input type="checkbox" name="fields" value="name" onchange="updatePreview()" checked /> Name</label><br />
+				<label><input type="checkbox" name="fields" value="description" onchange="updatePreview()" checked /> Description</label><br />
+				<label><input type="checkbox" name="fields" value="maintainer" onchange="updatePreview()" checked /> Maintainer</label><br />
+				<label><input type="checkbox" name="fields" value="tags" onchange="updatePreview()" checked /> Tags</label><br />
+				<label><input type="checkbox" name="fields" value="archived" onchange="updatePreview()" checked /> Archived</label><br />
+				<label><input type="checkbox" name="fields" value="deprecated" onchange="updatePreview()" checked /> Deprecated</label><br />
+				<label><input type="checkbox" name="fields" value="creationDate" onchange="updatePreview()" checked /> Creation Date</label><br />
+                <label><input type="checkbox" name="fields" value="env" onchange="updatePreview()" checked /> Environment Key</label><br />
+                <label><input type="checkbox" name="fields" value="envName" onchange="updatePreview()" checked /> Environment Name</label><br />
+				<label><input type="checkbox" name="fields" value="lastModified" onchange="updatePreview()" checked /> Last Modified</label><br />
+				<label><input type="checkbox" name="fields" value="status" onchange="updatePreview()" checked /> Status</label><br />
+				<label><input type="checkbox" name="fields" value="lastEvaluated" onchange="updatePreview()" checked /> Last Evaluated</label><br />
+            	</details>
+				
+				<input type="submit" id="exportButton" onclick="doExport()" value="Export to CSV" /><div id="export-spinner" class="spinner"></div>
+			</form>
+			</div>
+			<div id="preview">
+			<h2>Live Preview</h2>
+			<table id="preview-table">
+				<thead>
+					<tr id="preview-header">
+						<!-- Headers will be populated here -->
+					</tr>
+				</thead>
+				<tbody id="preview-body">
+					<!-- Data will be populated here -->
+				</tbody>
+			</table>
+			</div>	
+		</div>
+
+		<script>
+			
+
+			let globalFlags = [];
+			let globalFlagStatuses = [];
+            let globalAccessToken = null;
+
+			function getAccessToken() {
+				if (globalAccessToken) {
+                    return globalAccessToken;
+                } else {
+                    const hash = window.location.hash;
+                    const params = new URLSearchParams(hash.substring(1));
+					console.log("access token is", params);
+                    const accessToken = params.get('access_token');
+                    if (accessToken) {
+                        globalAccessToken = `Bearer ${accessToken}`;
+						window.history.replaceState({}, null, window.location.pathname);
+                        return accessToken;
+                    } else {
+						redirectToLogin();
+                        return null;
+                    }
+                }
+			}
+
+			function redirectToLogin() {
+				window.location.href ='/oauth/login';
+			}
+			function dateSlug() {
+				const date = new Date();
+				return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+			}
+		
+
+            function safeFileName(name) {
+                return name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            }
+            async function doExport() {
+                const accessToken = getAccessToken();
+                
+                const selectedFields = getSelectedFields();
+                const projectKey = document.getElementById('project-select').value;
+                const envKey = document.getElementById('env-select').value;
+                const spinner = document.getElementById('export-spinner');
+                const exportButton = document.getElementById('exportButton');
+                const limit = 20;
+                exportButton.disabled = true;
+                
+                spinner.style.opacity = 1;
+
+                try {
+                    exportButton.textContent = 'Loading flags...';
+                    const flags = await getAll(accessToken, `https://app.launchdarkly.com/api/v2/flags/${projectKey}?limit=${limit}&expand=evaluation&env=${envKey}`);
+                    exportButton.textContent = 'Loading statuses...';
+                    const flagStatuses = await getAll(accessToken,`https://app.launchdarkly.com/api/v2/flag-statuses/${projectKey}/${envKey}?limit=${limit}`);
+                    exportButton.textContent = 'Exporting...';
+                    console.log('got', flags, flagStatuses);
+                    const report = processFlags(flags, envKey, flagStatuses, selectedFields);
+                    const csv = report.map((row) => selectedFields.map((field) => {
+                        if(Array.isArray(row[field])) {
+                            return JSON.stringify(row[field].join(','));
+                        } else {
+                            return JSON.stringify(row[field]);
+                        }
+
+                    }).join(',')).join('\n');
+                    const firstLine = selectedFields.join(',');
+                    const blob = new Blob([firstLine, '\n', csv], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `launchdarkly-export-${projectKey}-${dateSlug()}.csv`;
+                    a.click();
+                } catch(error) {
+                    console.error('Error exporting data:', error);
+                    alert("Failed to export data: " + error);
+                } finally {
+                    spinner.style.opacity = 0;
+                    exportButton.disabled = false;
+                    exportButton.textContent = 'Export to CSV';
+                }
+                // get all flags and statuses
+            }
+
+			async function fetchProjects(accessToken) {
+				return get(accessToken, 'https://app.launchdarkly.com/api/v2/projects');
+			}
+
+			async function fetchEnvironments(accessToken, projectKey) {
+				return get(accessToken, `https://app.launchdarkly.com/api/v2/projects/${projectKey}/environments`)
+			}
+			// Function to make an HTTP GET request with retry logic (to handle failures and rate limits)
+			async function get(accessToken, url, maxRetries=5) {
+				for (let attempt = 0; attempt < maxRetries; attempt++) {
+					try {
+						const response = await fetch(url, {
+							headers: {
+								Authorization: `${accessToken}`,
+							},
+						});
+
+						// If the request is successful, return the JSON response
+						if (response.ok) {
+							return await response.json();
+						}
+						// If the request exceeds the rate limit, handle it by pausing
+						else if (response.status === 429) {
+							const timeout = parseInt(response.headers.get('x-ratelimit-reset')) || 1000;
+							console.info(`Rate limit exceeded. Sleeping for ${timeout}ms...`);
+							await sleep(timeout); // Sleep for the duration specified in the headers
+						}
+						// For any other errors, throw an error with the response status
+						else {
+							console.error(`Error: ${response.statusText}`);
+							throw new Error(`Failed to fetch data: ${response.status}`);
+						}
+					} catch (error) {
+						console.error(`Attempt ${attempt + 1} failed. Retrying...`);
+					}
+				}
+
+				// If all retry attempts fail, throw an error
+				throw new Error(`Failed to fetch data after ${maxRetries} attempts`);
+			}
+			// Helper function to sleep for a given number of milliseconds (used for rate limiting)
+			function sleep(ms) {
+				return new Promise((resolve) => setTimeout(resolve, ms));
+			}
+
+			// Function to fetch all paginated results from the API (handles pagination automatically)
+			async function getAll(accessToken, url) {
+				let nextUrl = url;
+				const results = [];
+
+				// Loop through paginated responses until there are no more pages
+				while (nextUrl) {
+					const response = await get(accessToken, nextUrl);
+					const {
+						items,
+						_links: { next },
+					} = response;
+					results.push(...items);
+
+					// Check if there is a "next" page, and update the next URL if available
+					nextUrl = next && next.href ? API_BASE + next.href : null;
+				}
+
+				// Return the combined list of items from all pages
+				return results;
+			}
+			async function populateProjects() {
+				const accessToken = getAccessToken();
+				
+				try {
+					document.getElementById('project-spinner').style.display = 'inline-block';
+					const projects = await fetchProjects(accessToken);
+					const projectSelect = document.getElementById('project-select');
+					projectSelect.innerHTML = '';
+
+					projects.items.forEach((project) => {
+						const option = document.createElement('option');
+						option.value = project.key;
+						option.textContent = project.name;
+						projectSelect.appendChild(option);
+					});
+
+					// Populate environments for the first project by default
+					populateEnvironments();
+				} catch (error) {
+					console.error('Error fetching projects:', error);
+				} finally {
+					document.getElementById('project-spinner').style.opacity = 0;
+				}
+			}
+
+			async function populateEnvironments() {
+				const accessToken = getAccessToken();
+				
+
+				const projectKey = document.getElementById('project-select').value;
+				try {
+					document.getElementById('env-spinner').style.opacity =  1;
+					const environments = await fetchEnvironments(accessToken, projectKey);
+					const envSelect = document.getElementById('env-select');
+					envSelect.innerHTML = '';
+
+					environments.items.forEach((env) => {
+						const option = document.createElement('option');
+						option.value = env.key;
+						option.textContent = env.name;
+						envSelect.appendChild(option);
+					});
+
+					// Load flags and statuses for the first environment by default
+					loadFlagsAndStatuses();
+				} catch (error) {
+					console.error('Error fetching environments:', error);
+				} finally {
+					document.getElementById('env-spinner').style.opacity = 0;
+				}
+			}
+
+			async function fetchFlags(accessToken, projectKey, envKey, limit=20) {
+				return get(accessToken,`https://app.launchdarkly.com/api/v2/flags/${projectKey}?expand=evaluation&env=${envKey}&limit=${limit}`);
+			}
+
+			async function fetchFlagStatuses(accessToken, projectKey, envKey, limit=20) {
+				return get(accessToken,`https://app.launchdarkly.com/api/v2/flag-statuses/${projectKey}/${envKey}?limit=${limit}`);
+			}
+
+			async function loadFlagsAndStatuses() {
+				const accessToken = getAccessToken();
+				if (!accessToken) {
+					//redirectToLogin();
+					return;
+				}
+
+				const projectKey = document.getElementById('project-select').value;
+				const envKey = document.getElementById('env-select').value;
+				const limit = 100;
+
+				try {
+					document.getElementById('env-spinner').style.opacity = 1;
+					const flags = await fetchFlags(accessToken, projectKey, envKey);
+					const flagStatuses = await fetchFlagStatuses(accessToken, projectKey, envKey, limit);
+
+					globalFlags = flags.items;
+					globalFlagStatuses = flagStatuses.items;
+
+					updatePreview();
+				} catch (error) {
+					console.error('Error fetching flags and statuses:', error);
+				} finally {
+					document.getElementById('env-spinner').style.opacity = 0;
+				}
+			}
+			function millisecondTimestampToString(millis) {
+				// if it fails returned null
+				try {
+					return (millis && new Date(Math.floor(millis)).toISOString()) || null;
+				} catch (error) {
+					console.warn('failed to parse timestamp', millis);
+					return null;
+				}
+			}
+            function processFlags(flags, envKey, flagStatuses, selectedFields) {
+                return flags.map((flag) => {
+					const {
+						key,
+                        name,
+						tags,
+						description,
+						_maintainer: maintainer,
+						archived,
+						deprecated,
+						creationDate,
+						_links: {
+							self: { href: flagLink },
+						},
+						environments,
+					} = flag;
+
+					
+					const envDetails = environments[envKey];
+					const lastModified = envDetails ? envDetails.lastModified : null;
+
+					const flagStatus = flagStatuses.find(
+						({
+							_links: {
+								parent: { href: parentLink },
+							},
+						}) => parentLink === flagLink
+					);
+
+					return {
+						key,
+                        name,
+						description,
+						maintainer: maintainer && maintainer.email,
+						tags,
+						archived,
+						deprecated,
+						creationDate: millisecondTimestampToString(creationDate),
+                        env: envKey,
+                        envName: envDetails ? envDetails._environmentName : null,
+						lastModified: millisecondTimestampToString(lastModified),
+						status: flagStatus ? flagStatus.name : null,
+						lastEvaluated: flagStatus ? flagStatus.lastRequested : null,
+					};
+				});
+            }
+            function getSelectedFields() {
+                return Array.from(document.querySelectorAll('input[name="fields"]:checked')).map((input) => input.value);
+            }
+			async function updatePreview() {
+				const selectedFields = getSelectedFields();
+				const headerRow = document.getElementById('preview-header');
+				const body = document.getElementById('preview-body');
+
+				// Clear existing preview
+				headerRow.innerHTML = '';
+				body.innerHTML = '';
+
+				// Populate header
+				selectedFields.forEach((field) => {
+					const th = document.createElement('th');
+					th.textContent = field;
+					headerRow.appendChild(th);
+				});
+                const envKey = document.getElementById('env-select').value;
+
+				const report = processFlags(globalFlags,envKey, globalFlagStatuses, selectedFields);
+
+				// Populate body with fetched data
+				report.forEach((rowData) => {
+					const tr = document.createElement('tr');
+					selectedFields.forEach((field) => {
+						const td = document.createElement('td');
+
+						td.textContent = rowData[field];
+
+						tr.appendChild(td);
+					});
+					body.appendChild(tr);
+				});
+			}
+
+			document.addEventListener('DOMContentLoaded', () => {
+				const accessToken = getAccessToken();
+				if (accessToken) {
+					populateProjects()
+				}
+			
+			});
+		</script>
+	</body>
+</html>

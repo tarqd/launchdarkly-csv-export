@@ -170,3 +170,7 @@ dist
 
 .dev.vars
 .wrangler/
+.info
+*.http
+wrangler.toml
+flags.json
