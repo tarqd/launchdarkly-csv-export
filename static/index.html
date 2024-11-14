@@ -278,7 +278,7 @@
 			let globalFlags = [];
 			let globalFlagStatuses = [];
             let globalAccessToken = null;
-
+                      const API_BASE = 'https://app.launchdarkly.com';
 			function getAccessToken() {
 				if (globalAccessToken) {
                     return globalAccessToken;
@@ -401,7 +401,7 @@
 			function sleep(ms) {
 				return new Promise((resolve) => setTimeout(resolve, ms));
 			}
-
+    
 			// Function to fetch all paginated results from the API (handles pagination automatically)
 			async function getAll(accessToken, url) {
 				let nextUrl = url;
