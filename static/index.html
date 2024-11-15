@@ -1,91 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>LaunchDarkly CSV Export</title>
 		<style>
-            :root {
-                /* Grayscale colours */
-                --white: #ffffff;
-                --gray01: #f8f8f8;
-                --gray02: #e6e6e6;
-                --gray03: #d1d3d4;
-                --gray04: #bcbec0;
-                --gray05: #a7a9ac;
-                --gray06: #939598;
-                --gray07: #6d6e71;
-                --gray08: #58595b;
-                --gray09: #414042;
-                --black00: #2c2c2c;
-                --black01: #282828;
-                --black02: #212121;
-                --black03: #191919;
-                --black04: #000000;
+			:root {
+				/* Grayscale colours */
+				--white: #ffffff;
+				--gray01: #f8f8f8;
+				--gray02: #e6e6e6;
+				--gray03: #d1d3d4;
+				--gray04: #bcbec0;
+				--gray05: #a7a9ac;
+				--gray06: #939598;
+				--gray07: #6d6e71;
+				--gray08: #58595b;
+				--gray09: #414042;
+				--black00: #2c2c2c;
+				--black01: #282828;
+				--black02: #212121;
+				--black03: #191919;
+				--black04: #000000;
 
-                /* Brand colours */
-                --yellow: #ebff38;
-                --blue: #405bff;
-                --pink: #ff386b;
-                --cyan: #3dd6f5;
-                --purple: #a34fde;
+				/* Brand colours */
+				--yellow: #ebff38;
+				--blue: #405bff;
+				--pink: #ff386b;
+				--cyan: #3dd6f5;
+				--purple: #a34fde;
 
-                /* Additional */
-                --border: #d8e5ee;
+				/* Additional */
+				--border: #d8e5ee;
 
-                /* Black/white */
-                --off-white: #f8f8f8;
-                --black: #000000;
-                --black100: #282828;
-                --black200: #212121;
-                --black300: #191919;
-                --gray100: #e6e6e6;
-                --gray200: #d1d3d4;
-                --gray300: #bcbec0;
-                --gray400: #a7a9ac;
-                --gray500: #939598;
-                --gray600: #6d6e71;
-                --gray700: #58595b;
-                --gray800: #414042;
-                --gray900: #353535;
+				/* Black/white */
+				--off-white: #f8f8f8;
+				--black: #000000;
+				--black100: #282828;
+				--black200: #212121;
+				--black300: #191919;
+				--gray100: #e6e6e6;
+				--gray200: #d1d3d4;
+				--gray300: #bcbec0;
+				--gray400: #a7a9ac;
+				--gray500: #939598;
+				--gray600: #6d6e71;
+				--gray700: #58595b;
+				--gray800: #414042;
+				--gray900: #353535;
 				--blue600: #2e3f7f;
-                /* User notification colours */
-                --success: #00da7b;
-                --warning: #eec340;
-                --error: #e83b3b;
+				/* User notification colours */
+				--success: #00da7b;
+				--warning: #eec340;
+				--error: #e83b3b;
 
-                /* Body font colour */
-                --light-text: #ffffff;
-                --dark-text: #282828;
-                --text-gradient-a: #edf4c9;
-                --text-gradient-b: #9eadf1;
+				/* Body font colour */
+				--light-text: #ffffff;
+				--dark-text: #282828;
+				--text-gradient-a: #edf4c9;
+				--text-gradient-b: #9eadf1;
 
-                /* Typography */
-                --font-primary: 'Audimat 3000';
-                --font-secondary: 'Sohne';
-            }
-            body {
-                    font-family: var(--font-secondary);
-                line-height: 1.6;
-                font-size: 12pt;
-                color: var(--dark-text);
-                background: var(--off-white);
-                margin: 20px;
-                min-width: 540px;
-            }
+				/* Typography */
+				--font-primary: 'Audimat 3000';
+				--font-secondary: 'Sohne';
+			}
+			body {
+				font-family: var(--font-secondary);
+				line-height: 1.6;
+				font-size: 12pt;
+				color: var(--dark-text);
+				background: var(--off-white);
+				margin: 20px;
+				min-width: 540px;
+			}
 			.container {
 				max-width: 800px;
 				margin: 0 auto;
 			}
 			h2 {
-				padding-top:0;
-				margin-top:0;
+				padding-top: 0;
+				margin-top: 0;
 			}
 			.fields-form {
 				margin-bottom: 20px;
 			}
 			label {
-				font-weight: bold;;
+				font-weight: bold;
 			}
 			.selectors-container {
 				display: flex;
@@ -96,27 +96,26 @@
 				width: 100%;
 				border-collapse: collapse;
 			}
-            label[for="project-select"], label[for="env-select"] {
-                min-width: 13rem;
-            }
-            #project-select, #env-select {
-                
-                display:inline-flex;
+			label[for='project-select'],
+			label[for='env-select'] {
+				min-width: 13rem;
+			}
+			#project-select,
+			#env-select {
+				display: inline-flex;
 				flex-grow: 1;
 				min-width: max-content;
-                padding: .5rem;
-                margin: .5rem 0;
-				display:block;
+				padding: 0.5rem;
+				margin: 0.5rem 0;
+				display: block;
+			}
 
-            }
-            
-            table,
+			table,
 			th,
 			td {
-				border: 1px solid var(--gray100)
-                
+				border: 1px solid var(--gray100);
 			}
-			
+
 			th,
 			td {
 				padding: 8px;
@@ -125,10 +124,9 @@
 			thead tr {
 				background-color: var(--gray900);
 				color: var(--white);
-				
 			}
 			thead th {
-				border:none;
+				border: none;
 			}
 			/* alternate row colors */
 			tbody tr:nth-child(odd) {
@@ -159,23 +157,22 @@
 				padding: 0.5em;
 			}
 			#exportButton {
-				
-				align-self:flex-start;
+				align-self: flex-start;
 				flex-basis: 12rem;
-    background-color: var(--blue);
-    color: var(--white);
-	font-weight: bold;;
-    border: none;
-    padding: 1em;
-    cursor: pointer;
-    font-family: var(--font-secondary);
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
+				background-color: var(--blue);
+				color: var(--white);
+				font-weight: bold;
+				border: none;
+				padding: 1em;
+				cursor: pointer;
+				font-family: var(--font-secondary);
+				border-radius: 4px;
+				transition: background-color 0.3s ease;
+			}
 
-#exportButton:hover {
-    background-color: var(--blue600);
-}
+			#exportButton:hover {
+				background-color: var(--blue600);
+			}
 
 			details[open] summary {
 				border-bottom: 1px solid var(--border);
@@ -188,17 +185,17 @@
 				align-items: center;
 				gap: 1rem;
 				margin-bottom: 20px;
-        	}
+			}
 			.spinner {
 				display: inline-block;
-                opacity: 0;
+				opacity: 0;
 				border: 4px solid rgba(0, 0, 0, 0.1);
 				border-left-color: var(--blue);
 				border-radius: 50%;
-				width: .5rem;
-				height: .5rem;
+				width: 0.5rem;
+				height: 0.5rem;
 				animation: spin 1s linear infinite;
-                vertical-align: middle;
+				vertical-align: middle;
 			}
 			@keyframes spin {
 				to {
@@ -235,29 +232,50 @@
 					</div>
 				</div>
 				<div class="export-container">
-				
-                <details>
-                <summary>Fields</summary>
-                
-				<label><input type="checkbox" name="fields" value="key" onchange="updatePreview()" checked /> Key</label><br />
-                <label><input type="checkbox" name="fields" value="name" onchange="updatePreview()" checked /> Name</label><br />
-				<label><input type="checkbox" name="fields" value="description" onchange="updatePreview()" checked /> Description</label><br />
-				<label><input type="checkbox" name="fields" value="maintainer" onchange="updatePreview()" checked /> Maintainer</label><br />
-				<label><input type="checkbox" name="fields" value="tags" onchange="updatePreview()" checked /> Tags</label><br />
-				<label><input type="checkbox" name="fields" value="archived" onchange="updatePreview()" checked /> Archived</label><br />
-				<label><input type="checkbox" name="fields" value="deprecated" onchange="updatePreview()" checked /> Deprecated</label><br />
-				<label><input type="checkbox" name="fields" value="creationDate" onchange="updatePreview()" checked /> Creation Date</label><br />
-                <label><input type="checkbox" name="fields" value="env" onchange="updatePreview()" checked /> Environment Key</label><br />
-                <label><input type="checkbox" name="fields" value="envName" onchange="updatePreview()" checked /> Environment Name</label><br />
-				<label><input type="checkbox" name="fields" value="lastModified" onchange="updatePreview()" checked /> Last Modified</label><br />
-				<label><input type="checkbox" name="fields" value="status" onchange="updatePreview()" checked /> Status</label><br />
-				<label><input type="checkbox" name="fields" value="lastEvaluated" onchange="updatePreview()" checked /> Last Evaluated</label><br />
-            	</details>
-				
-				<input type="submit" id="exportButton" onclick="doExport()" value="Export to CSV" /><div id="export-spinner" class="spinner"></div>
+					<details>
+						<summary>Fields</summary>
+						<label><input type="checkbox" name="fields" value="key" onchange="updatePreview()" checked /> Key</label><br />
+						<label><input type="checkbox" name="fields" value="name" onchange="updatePreview()" checked /> Name</label><br />
+						<label>
+							<input type="checkbox" name="fields" value="description" onchange="updatePreview()" checked />
+							Description </label
+						><br />
+						<label
+							><input type="checkbox" name="fields" value="maintainer" onchange="updatePreview()" checked /> Maintainer</label
+						><br />
+						<label><input type="checkbox" name="fields" value="tags" onchange="updatePreview()" checked /> Tags</label><br />
+						<label><input type="checkbox" name="fields" value="archived" onchange="updatePreview()" checked /> Archived</label
+						><br />
+						<label
+							><input type="checkbox" name="fields" value="deprecated" onchange="updatePreview()" checked /> Deprecated</label
+						><br />
+						<label
+							><input type="checkbox" name="fields" value="creationDate" onchange="updatePreview()" checked /> Creation
+							Date</label
+						><br />
+						<label><input type="checkbox" name="fields" value="env" onchange="updatePreview()" checked /> Environment Key</label
+						><br />
+						<label
+							><input type="checkbox" name="fields" value="envName" onchange="updatePreview()" checked /> Environment
+							Name</label
+						><br />
+						<label
+							><input type="checkbox" name="fields" value="lastModified" onchange="updatePreview()" checked /> Last
+							Modified</label
+						><br />
+						<label><input type="checkbox" name="fields" value="status" onchange="updatePreview()" checked /> Status</label
+						><br />
+						<label
+							><input type="checkbox" name="fields" value="lastEvaluated" onchange="updatePreview()" checked /> Last
+							Evaluated</label
+						><br />
+					</details>
+					<input type="submit" id="exportButton" onclick="doExport()" value="Export to CSV" />
+					<div id="export-spinner" class="spinner"></div>
+				</div>
 			</form>
-			</div>
-			<div id="preview">
+		</div>
+		<div id="preview">
 			<h2>Live Preview</h2>
 			<table id="preview-table">
 				<thead>
@@ -269,103 +287,111 @@
 					<!-- Data will be populated here -->
 				</tbody>
 			</table>
-			</div>	
 		</div>
 
 		<script>
-			
-
 			let globalFlags = [];
 			let globalFlagStatuses = [];
-            let globalAccessToken = null;
-                      const API_BASE = 'https://app.launchdarkly.com';
+            const API_BASE = 'https://app.launchdarkly.com';
+			let globalAccessToken = null;
+
 			function getAccessToken() {
 				if (globalAccessToken) {
-                    return globalAccessToken;
-                } else {
-                    const hash = window.location.hash;
-                    const params = new URLSearchParams(hash.substring(1));
-					console.log("access token is", params);
-                    const accessToken = params.get('access_token');
-                    if (accessToken) {
-                        globalAccessToken = `Bearer ${accessToken}`;
+					return globalAccessToken;
+				} else {
+					const hash = window.location.hash;
+					const params = new URLSearchParams(hash.substring(1));
+					console.log('access token is', params);
+					const accessToken = params.get('access_token');
+					if (accessToken) {
+						globalAccessToken = `Bearer ${accessToken}`;
 						window.history.replaceState({}, null, window.location.pathname);
-                        return accessToken;
-                    } else {
+						return accessToken;
+					} else {
 						redirectToLogin();
-                        return null;
-                    }
-                }
+						return null;
+					}
+				}
 			}
 
 			function redirectToLogin() {
-				window.location.href ='/oauth/login';
+				window.location.href = '/oauth/login';
 			}
 			function dateSlug() {
 				const date = new Date();
 				return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 			}
-		
 
-            function safeFileName(name) {
-                return name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-            }
-            async function doExport() {
-                const accessToken = getAccessToken();
-                
-                const selectedFields = getSelectedFields();
-                const projectKey = document.getElementById('project-select').value;
-                const envKey = document.getElementById('env-select').value;
-                const spinner = document.getElementById('export-spinner');
-                const exportButton = document.getElementById('exportButton');
-                const limit = 20;
-                exportButton.disabled = true;
-                
-                spinner.style.opacity = 1;
+			function safeFileName(name) {
+				return name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+			}
+			async function doExport() {
+				const accessToken = getAccessToken();
 
-                try {
-                    exportButton.textContent = 'Loading flags...';
-                    const flags = await getAll(accessToken, `https://app.launchdarkly.com/api/v2/flags/${projectKey}?limit=${limit}&expand=evaluation&env=${envKey}`);
-                    exportButton.textContent = 'Loading statuses...';
-                    const flagStatuses = await getAll(accessToken,`https://app.launchdarkly.com/api/v2/flag-statuses/${projectKey}/${envKey}?limit=${limit}`);
-                    exportButton.textContent = 'Exporting...';
-                    console.log('got', flags, flagStatuses);
-                    const report = processFlags(flags, envKey, flagStatuses, selectedFields);
-                    const csv = report.map((row) => selectedFields.map((field) => {
-                        if(Array.isArray(row[field])) {
-                            return JSON.stringify(row[field].join(','));
-                        } else {
-                            return JSON.stringify(row[field]);
-                        }
+				const selectedFields = getSelectedFields();
+				const projectKey = document.getElementById('project-select').value;
+				const envKey = document.getElementById('env-select').value;
+				const spinner = document.getElementById('export-spinner');
+				const exportButton = document.getElementById('exportButton');
+				const limit = 20;
+				exportButton.disabled = true;
 
-                    }).join(',')).join('\n');
-                    const firstLine = selectedFields.join(',');
-                    const blob = new Blob([firstLine, '\n', csv], { type: 'text/csv' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `launchdarkly-export-${projectKey}-${dateSlug()}.csv`;
-                    a.click();
-                } catch(error) {
-                    console.error('Error exporting data:', error);
-                    alert("Failed to export data: " + error);
-                } finally {
-                    spinner.style.opacity = 0;
-                    exportButton.disabled = false;
-                    exportButton.textContent = 'Export to CSV';
-                }
-                // get all flags and statuses
-            }
+				spinner.style.opacity = 1;
+
+				try {
+					exportButton.textContent = 'Loading flags...';
+					const flags = await getAll(
+						accessToken,
+						`https://app.launchdarkly.com/api/v2/flags/${projectKey}?limit=${limit}&expand=evaluation&env=${envKey}`,
+					);
+					exportButton.textContent = 'Loading statuses...';
+					const flagStatuses = await getAll(
+						accessToken,
+						`https://app.launchdarkly.com/api/v2/flag-statuses/${projectKey}/${envKey}?limit=${limit}`,
+					);
+					exportButton.textContent = 'Exporting...';
+					console.log('got', flags, flagStatuses);
+					const report = processFlags(flags, envKey, flagStatuses, selectedFields);
+					const csv = report
+						.map((row) =>
+							selectedFields
+								.map((field) => {
+									if (Array.isArray(row[field])) {
+										return JSON.stringify(row[field].join(','));
+									} else {
+										return JSON.stringify(row[field]);
+									}
+								})
+								.join(','),
+						)
+						.join('\n');
+					const firstLine = selectedFields.join(',');
+					const blob = new Blob([firstLine, '\n', csv], { type: 'text/csv' });
+					const url = URL.createObjectURL(blob);
+					const a = document.createElement('a');
+					a.href = url;
+					a.download = `launchdarkly-export-${projectKey}-${dateSlug()}.csv`;
+					a.click();
+				} catch (error) {
+					console.error('Error exporting data:', error);
+					alert('Failed to export data: ' + error);
+				} finally {
+					spinner.style.opacity = 0;
+					exportButton.disabled = false;
+					exportButton.textContent = 'Export to CSV';
+				}
+				// get all flags and statuses
+			}
 
 			async function fetchProjects(accessToken) {
 				return get(accessToken, 'https://app.launchdarkly.com/api/v2/projects');
 			}
 
 			async function fetchEnvironments(accessToken, projectKey) {
-				return get(accessToken, `https://app.launchdarkly.com/api/v2/projects/${projectKey}/environments`)
+				return get(accessToken, `https://app.launchdarkly.com/api/v2/projects/${projectKey}/environments`);
 			}
 			// Function to make an HTTP GET request with retry logic (to handle failures and rate limits)
-			async function get(accessToken, url, maxRetries=5) {
+			async function get(accessToken, url, maxRetries = 5) {
 				for (let attempt = 0; attempt < maxRetries; attempt++) {
 					try {
 						const response = await fetch(url, {
@@ -425,7 +451,7 @@
 			}
 			async function populateProjects() {
 				const accessToken = getAccessToken();
-				
+
 				try {
 					document.getElementById('project-spinner').style.display = 'inline-block';
 					const projects = await fetchProjects(accessToken);
@@ -450,11 +476,10 @@
 
 			async function populateEnvironments() {
 				const accessToken = getAccessToken();
-				
 
 				const projectKey = document.getElementById('project-select').value;
 				try {
-					document.getElementById('env-spinner').style.opacity =  1;
+					document.getElementById('env-spinner').style.opacity = 1;
 					const environments = await fetchEnvironments(accessToken, projectKey);
 					const envSelect = document.getElementById('env-select');
 					envSelect.innerHTML = '';
@@ -475,12 +500,15 @@
 				}
 			}
 
-			async function fetchFlags(accessToken, projectKey, envKey, limit=20) {
-				return get(accessToken,`https://app.launchdarkly.com/api/v2/flags/${projectKey}?expand=evaluation&env=${envKey}&limit=${limit}`);
+			async function fetchFlags(accessToken, projectKey, envKey, limit = 20) {
+				return get(
+					accessToken,
+					`https://app.launchdarkly.com/api/v2/flags/${projectKey}?expand=evaluation&env=${envKey}&limit=${limit}`,
+				);
 			}
 
-			async function fetchFlagStatuses(accessToken, projectKey, envKey, limit=20) {
-				return get(accessToken,`https://app.launchdarkly.com/api/v2/flag-statuses/${projectKey}/${envKey}?limit=${limit}`);
+			async function fetchFlagStatuses(accessToken, projectKey, envKey, limit = 20) {
+				return get(accessToken, `https://app.launchdarkly.com/api/v2/flag-statuses/${projectKey}/${envKey}?limit=${limit}`);
 			}
 
 			async function loadFlagsAndStatuses() {
@@ -518,11 +546,11 @@
 					return null;
 				}
 			}
-            function processFlags(flags, envKey, flagStatuses, selectedFields) {
-                return flags.map((flag) => {
+			function processFlags(flags, envKey, flagStatuses, selectedFields) {
+				return flags.map((flag) => {
 					const {
 						key,
-                        name,
+						name,
 						tags,
 						description,
 						_maintainer: maintainer,
@@ -535,7 +563,6 @@
 						environments,
 					} = flag;
 
-					
 					const envDetails = environments[envKey];
 					const lastModified = envDetails ? envDetails.lastModified : null;
 
@@ -544,29 +571,29 @@
 							_links: {
 								parent: { href: parentLink },
 							},
-						}) => parentLink === flagLink
+						}) => parentLink === flagLink,
 					);
 
 					return {
 						key,
-                        name,
+						name,
 						description,
 						maintainer: maintainer && maintainer.email,
 						tags,
 						archived,
 						deprecated,
 						creationDate: millisecondTimestampToString(creationDate),
-                        env: envKey,
-                        envName: envDetails ? envDetails._environmentName : null,
+						env: envKey,
+						envName: envDetails ? envDetails._environmentName : null,
 						lastModified: millisecondTimestampToString(lastModified),
 						status: flagStatus ? flagStatus.name : null,
 						lastEvaluated: flagStatus ? flagStatus.lastRequested : null,
 					};
 				});
-            }
-            function getSelectedFields() {
-                return Array.from(document.querySelectorAll('input[name="fields"]:checked')).map((input) => input.value);
-            }
+			}
+			function getSelectedFields() {
+				return Array.from(document.querySelectorAll('input[name="fields"]:checked')).map((input) => input.value);
+			}
 			async function updatePreview() {
 				const selectedFields = getSelectedFields();
 				const headerRow = document.getElementById('preview-header');
@@ -582,9 +609,9 @@
 					th.textContent = field;
 					headerRow.appendChild(th);
 				});
-                const envKey = document.getElementById('env-select').value;
+				const envKey = document.getElementById('env-select').value;
 
-				const report = processFlags(globalFlags,envKey, globalFlagStatuses, selectedFields);
+				const report = processFlags(globalFlags, envKey, globalFlagStatuses, selectedFields);
 
 				// Populate body with fetched data
 				report.forEach((rowData) => {
@@ -603,9 +630,8 @@
 			document.addEventListener('DOMContentLoaded', () => {
 				const accessToken = getAccessToken();
 				if (accessToken) {
-					populateProjects()
+					populateProjects();
 				}
-			
 			});
 		</script>
 	</body>
