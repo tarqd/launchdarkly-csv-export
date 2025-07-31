@@ -269,6 +269,12 @@
 							><input type="checkbox" name="fields" value="lastEvaluated" onchange="updatePreview()" checked /> Last
 							Evaluated</label
 						><br />
+						<label
+							><input type="checkbox" name="fields" value="readyToArchive" onchange="updatePreview()" checked /> Ready to Archive</label
+						><br />
+						<label>
+							<input type="checkbox" name="fields" value="readyForCodeRemoval" onchange="updatePreview()" checked /> Ready for Code Removal
+						</label>
 					</details>
 					<input type="submit" id="exportButton" onclick="doExport()" value="Export to CSV" />
 					<div id="export-spinner" class="spinner"></div>
@@ -342,7 +348,7 @@
 					exportButton.textContent = 'Loading flags...';
 					const flags = await getAll(
 						accessToken,
-						`https://app.launchdarkly.com/api/v2/flags/${projectKey}?limit=${limit}&expand=evaluation&env=${envKey}`,
+						`https://app.launchdarkly.com/api/v2/flags/${projectKey}?limit=${limit}&expand=evaluation,archiveChecks&env=${envKey}`,
 					);
 					exportButton.textContent = 'Loading statuses...';
 					const flagStatuses = await getAll(
@@ -503,7 +509,7 @@
 			async function fetchFlags(accessToken, projectKey, envKey, limit = 20) {
 				return get(
 					accessToken,
-					`https://app.launchdarkly.com/api/v2/flags/${projectKey}?expand=evaluation&env=${envKey}&limit=${limit}`,
+					`https://app.launchdarkly.com/api/v2/flags/${projectKey}?expand=evaluation,archiveChecks&env=${envKey}&limit=${limit}`,
 				);
 			}
 
@@ -557,6 +563,7 @@
 						archived,
 						deprecated,
 						creationDate,
+						stale,
 						_links: {
 							self: { href: flagLink },
 						},
@@ -588,6 +595,8 @@
 						lastModified: millisecondTimestampToString(lastModified),
 						status: flagStatus ? flagStatus.name : null,
 						lastEvaluated: flagStatus ? flagStatus.lastRequested : null,
+						readyToArchive: stale?.readyToArchive,
+						readyForCodeRemoval: stale?.readyForCodeRemoval,
 					};
 				});
 			}
