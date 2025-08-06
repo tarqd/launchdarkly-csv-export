@@ -89,25 +89,122 @@
 			}
 			.selectors-container {
 				display: flex;
+				align-items: flex-start;
+				gap: 2rem;
+				margin-bottom: 1rem;
+			}
+			
+			.selector-group {
+				display: flex;
+				flex-direction: column;
+				min-width: 300px;
+			}
+			
+			.selector-group label {
+				margin-bottom: 0.5rem;
+				font-weight: bold;
+			}
+			
+			.loading-indicators {
+				height: 40px;
+				display: flex;
 				align-items: center;
-				gap: 1rem;
+				margin-top: 0.5rem;
+			}
+			
+			.auth-controls {
+				display: flex;
+				align-items: flex-end;
+				margin-top: 1.5rem;
+			}
+			
+			.logout-btn {
+				background-color: var(--gray600);
+				color: var(--white);
+				border: none;
+				padding: 0.5rem 1rem;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 12pt;
+				transition: background-color 0.3s ease;
+			}
+			
+			.logout-btn:hover {
+				background-color: var(--gray700);
+			}
+			
+			.project-select-container {
+				position: relative;
+				display: inline-block;
+				min-width: 300px;
+			}
+			
+			.project-search-input {
+				width: 100%;
+				padding: 0.5rem;
+				border: 1px solid var(--gray200);
+				border-radius: 4px;
+				font-size: 12pt;
+				margin-bottom: 0.5rem;
+			}
+			
+			.project-dropdown {
+				position: absolute;
+				top: 100%;
+				left: 0;
+				right: 0;
+				max-height: 200px;
+				overflow-y: auto;
+				background: var(--white);
+				border: 1px solid var(--gray200);
+				border-radius: 4px;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+				z-index: 1000;
+				display: none;
+			}
+			
+			.project-option {
+				padding: 0.5rem;
+				cursor: pointer;
+				border-bottom: 1px solid var(--gray100);
+			}
+			
+			.project-option:hover {
+				background-color: var(--gray01);
+			}
+			
+			.project-option.selected {
+				background-color: var(--blue);
+				color: var(--white);
+			}
+			
+			.project-select-display {
+				width: 100%;
+				min-width: 300px;
+				padding: 0.5rem;
+				border: 1px solid var(--gray200);
+				border-radius: 4px;
+				background: var(--white);
+				cursor: pointer;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			
+			.project-select-display:hover {
+				border-color: var(--gray300);
 			}
 			table {
 				width: 100%;
 				border-collapse: collapse;
 			}
-			label[for='project-select'],
-			label[for='env-select'] {
-				min-width: 13rem;
-			}
-			#project-select,
 			#env-select {
-				display: inline-flex;
-				flex-grow: 1;
-				min-width: max-content;
+				width: 100%;
+				min-width: 300px;
 				padding: 0.5rem;
-				margin: 0.5rem 0;
-				display: block;
+				border: 1px solid var(--gray200);
+				border-radius: 4px;
+				font-size: 12pt;
 			}
 
 			table,
@@ -195,7 +292,7 @@
 				width: 0.5rem;
 				height: 0.5rem;
 				animation: spin 1s linear infinite;
-				vertical-align: middle;
+				margin-right: 0.5rem;
 			}
 			@keyframes spin {
 				to {
@@ -210,25 +307,85 @@
 				height: max-content;
 				border-radius: 5px;
 			}
+			
+			.progress-container {
+				display: none;
+				padding: 8px;
+				background-color: var(--gray01);
+				border-radius: 4px;
+				border: 1px solid var(--border);
+				flex: 1;
+				margin-left: 0.5rem;
+			}
+			
+			.progress-bar {
+				width: 100%;
+				height: 20px;
+				background-color: var(--gray200);
+				border-radius: 10px;
+				overflow: hidden;
+				margin: 5px 0;
+			}
+			
+			.progress-fill {
+				height: 100%;
+				background-color: var(--blue);
+				transition: width 0.3s ease;
+				border-radius: 10px;
+			}
+			
+			.progress-text {
+				font-size: 12px;
+				color: var(--gray600);
+				text-align: center;
+			}
 		</style>
 	</head>
 	<body>
 		<div class="container">
 			<form>
 				<div class="selectors-container">
-					<div>
+					<div class="selector-group">
 						<label for="project-select">Project:</label>
-						<select id="project-select" onchange="populateEnvironments()" placeholder="Project">
-							<!-- Projects will be populated here -->
-						</select>
-						<div id="project-spinner" class="spinner"></div>
+						<div class="project-select-container">
+							<div class="project-select-display" onclick="toggleProjectDropdown()">
+								<span id="project-display-text">Select a project...</span>
+								<span>▼</span>
+							</div>
+							<div class="project-dropdown" id="project-dropdown">
+								<input type="text" class="project-search-input" id="project-search" placeholder="Search projects..." oninput="filterProjects()">
+								<div id="project-options">
+									<!-- Project options will be populated here -->
+								</div>
+							</div>
+						</div>
+						<div class="loading-indicators">
+							<div id="project-spinner" class="spinner"></div>
+							<div id="project-progress" class="progress-container">
+								<div class="progress-bar">
+									<div class="progress-fill" id="project-progress-fill"></div>
+								</div>
+								<div class="progress-text" id="project-progress-text">Loading projects...</div>
+							</div>
+						</div>
 					</div>
-					<div>
+					<div class="selector-group">
 						<label for="env-select">Environment:</label>
 						<select id="env-select" onchange="loadFlagsAndStatuses()" placeholder="Environment">
 							<!-- Environments will be populated here -->
 						</select>
-						<div id="env-spinner" class="spinner"></div>
+						<div class="loading-indicators">
+							<div id="env-spinner" class="spinner"></div>
+							<div id="env-progress" class="progress-container">
+								<div class="progress-bar">
+									<div class="progress-fill" id="env-progress-fill"></div>
+								</div>
+								<div class="progress-text" id="env-progress-text">Loading environments...</div>
+							</div>
+						</div>
+					</div>
+					<div class="auth-controls">
+						<button type="button" onclick="logout()" class="logout-btn">Logout</button>
 					</div>
 				</div>
 				<div class="export-container">
@@ -276,7 +433,7 @@
 							<input type="checkbox" name="fields" value="readyForCodeRemoval" onchange="updatePreview()" checked /> Ready for Code Removal
 						</label>
 					</details>
-					<input type="submit" id="exportButton" onclick="doExport()" value="Export to CSV" />
+					<button type="button" id="exportButton" onclick="doExport()">Export to CSV</button>
 					<div id="export-spinner" class="spinner"></div>
 				</div>
 			</form>
@@ -298,6 +455,7 @@
 		<script>
 			let globalFlags = [];
 			let globalFlagStatuses = [];
+			let globalProjects = [];
             const API_BASE = 'https://app.launchdarkly.com';
 			let globalAccessToken = null;
 
@@ -305,11 +463,21 @@
 				if (globalAccessToken) {
 					return globalAccessToken;
 				} else {
+					// First check localStorage for existing token
+					const storedToken = localStorage.getItem('ld_access_token');
+					if (storedToken) {
+						globalAccessToken = `Bearer ${storedToken}`;
+						return storedToken;
+					}
+					
+					// Then check URL hash for new token from OAuth flow
 					const hash = window.location.hash;
 					const params = new URLSearchParams(hash.substring(1));
 					console.log('access token is', params);
 					const accessToken = params.get('access_token');
 					if (accessToken) {
+						// Store token in localStorage for persistence
+						localStorage.setItem('ld_access_token', accessToken);
 						globalAccessToken = `Bearer ${accessToken}`;
 						window.history.replaceState({}, null, window.location.pathname);
 						return accessToken;
@@ -323,6 +491,21 @@
 			function redirectToLogin() {
 				window.location.href = '/oauth/login';
 			}
+			
+			function logout() {
+				// Clear stored token
+				localStorage.removeItem('ld_access_token');
+				globalAccessToken = null;
+				// Redirect to login
+				redirectToLogin();
+			}
+			
+			function handleTokenExpiration() {
+				// Clear stored token if it's expired
+				localStorage.removeItem('ld_access_token');
+				globalAccessToken = null;
+				redirectToLogin();
+			}
 			function dateSlug() {
 				const date = new Date();
 				return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -335,7 +518,17 @@
 				const accessToken = getAccessToken();
 
 				const selectedFields = getSelectedFields();
-				const projectKey = document.getElementById('project-select').value;
+				
+				// Get the selected project key from the display text
+				const selectedProjectName = document.getElementById('project-display-text').textContent;
+				const selectedProject = globalProjects.find(p => p.name === selectedProjectName);
+				
+				if (!selectedProject) {
+					alert('Please select a project first');
+					return;
+				}
+				
+				const projectKey = selectedProject.key;
 				const envKey = document.getElementById('env-select').value;
 				const spinner = document.getElementById('export-spinner');
 				const exportButton = document.getElementById('exportButton');
@@ -390,11 +583,11 @@
 			}
 
 			async function fetchProjects(accessToken) {
-				return get(accessToken, 'https://app.launchdarkly.com/api/v2/projects');
+				return getAll(accessToken, 'https://app.launchdarkly.com/api/v2/projects?limit=50', updateProjectProgress);
 			}
 
 			async function fetchEnvironments(accessToken, projectKey) {
-				return get(accessToken, `https://app.launchdarkly.com/api/v2/projects/${projectKey}/environments`);
+				return getAll(accessToken, `https://app.launchdarkly.com/api/v2/projects/${projectKey}/environments?limit=50`, updateEnvironmentProgress);
 			}
 			// Function to make an HTTP GET request with retry logic (to handle failures and rate limits)
 			async function get(accessToken, url, maxRetries = 5) {
@@ -419,6 +612,11 @@
 						// For any other errors, throw an error with the response status
 						else {
 							console.error(`Error: ${response.statusText}`);
+							// Check if token is expired (401 Unauthorized)
+							if (response.status === 401) {
+								handleTokenExpiration();
+								return;
+							}
 							throw new Error(`Failed to fetch data: ${response.status}`);
 						}
 					} catch (error) {
@@ -435,18 +633,34 @@
 			}
     
 			// Function to fetch all paginated results from the API (handles pagination automatically)
-			async function getAll(accessToken, url) {
+			async function getAll(accessToken, url, progressCallback = null) {
 				let nextUrl = url;
 				const results = [];
+				let totalCount = 0;
+				let loadedCount = 0;
 
 				// Loop through paginated responses until there are no more pages
 				while (nextUrl) {
 					const response = await get(accessToken, nextUrl);
 					const {
 						items,
+						totalCount: responseTotalCount,
 						_links: { next },
 					} = response;
+					
+					// Set total count from first response
+					if (totalCount === 0 && responseTotalCount) {
+						totalCount = responseTotalCount;
+					}
+					
 					results.push(...items);
+					loadedCount += items.length;
+
+					// Update progress if callback provided
+					if (progressCallback && totalCount > 0) {
+						const progress = Math.min((loadedCount / totalCount) * 100, 100);
+						progressCallback(progress, loadedCount, totalCount);
+					}
 
 					// Check if there is a "next" page, and update the next URL if available
 					nextUrl = next && next.href ? API_BASE + next.href : null;
@@ -455,42 +669,120 @@
 				// Return the combined list of items from all pages
 				return results;
 			}
+			function updateProjectProgress(progress, loaded, total) {
+				const progressContainer = document.getElementById('project-progress');
+				const progressFill = document.getElementById('project-progress-fill');
+				const progressText = document.getElementById('project-progress-text');
+				
+				progressContainer.style.display = 'block';
+				progressFill.style.width = `${progress}%`;
+				progressText.textContent = `Loading projects: ${loaded} of ${total} (${Math.round(progress)}%)`;
+			}
+
+			function updateEnvironmentProgress(progress, loaded, total) {
+				const progressContainer = document.getElementById('env-progress');
+				const progressFill = document.getElementById('env-progress-fill');
+				const progressText = document.getElementById('env-progress-text');
+				
+				progressContainer.style.display = 'block';
+				progressFill.style.width = `${progress}%`;
+				progressText.textContent = `Loading environments: ${loaded} of ${total} (${Math.round(progress)}%)`;
+			}
+
+			function toggleProjectDropdown() {
+				const dropdown = document.getElementById('project-dropdown');
+				const isVisible = dropdown.style.display === 'block';
+				dropdown.style.display = isVisible ? 'none' : 'block';
+				
+				if (!isVisible) {
+					document.getElementById('project-search').focus();
+				}
+			}
+
+			function filterProjects() {
+				const searchTerm = document.getElementById('project-search').value.toLowerCase();
+				const projectOptions = document.getElementById('project-options');
+				const options = projectOptions.querySelectorAll('.project-option');
+				
+				options.forEach(option => {
+					const projectName = option.textContent.toLowerCase();
+					if (projectName.includes(searchTerm)) {
+						option.style.display = 'block';
+					} else {
+						option.style.display = 'none';
+					}
+				});
+			}
+
+			function selectProject(projectKey, projectName) {
+				document.getElementById('project-display-text').textContent = projectName;
+				document.getElementById('project-dropdown').style.display = 'none';
+				document.getElementById('project-search').value = '';
+				
+				// Trigger environment population
+				populateEnvironments();
+			}
+
+			function populateProjectOptions() {
+				const projectOptions = document.getElementById('project-options');
+				projectOptions.innerHTML = '';
+				
+				globalProjects.forEach(project => {
+					const option = document.createElement('div');
+					option.className = 'project-option';
+					option.textContent = project.name;
+					option.onclick = () => selectProject(project.key, project.name);
+					projectOptions.appendChild(option);
+				});
+			}
+
 			async function populateProjects() {
 				const accessToken = getAccessToken();
 
 				try {
 					document.getElementById('project-spinner').style.display = 'inline-block';
+					document.getElementById('project-progress').style.display = 'none';
 					const projects = await fetchProjects(accessToken);
-					const projectSelect = document.getElementById('project-select');
-					projectSelect.innerHTML = '';
-
-					projects.items.forEach((project) => {
-						const option = document.createElement('option');
-						option.value = project.key;
-						option.textContent = project.name;
-						projectSelect.appendChild(option);
-					});
-
-					// Populate environments for the first project by default
-					populateEnvironments();
+					
+					// Store projects globally
+					globalProjects = projects;
+					
+					// Populate the dropdown options
+					populateProjectOptions();
+					
+					// Select the first project by default if available
+					if (projects.length > 0) {
+						selectProject(projects[0].key, projects[0].name);
+					}
 				} catch (error) {
 					console.error('Error fetching projects:', error);
 				} finally {
 					document.getElementById('project-spinner').style.opacity = 0;
+					document.getElementById('project-progress').style.display = 'none';
 				}
 			}
 
 			async function populateEnvironments() {
 				const accessToken = getAccessToken();
 
-				const projectKey = document.getElementById('project-select').value;
+				// Get the selected project key from the display text
+				const selectedProjectName = document.getElementById('project-display-text').textContent;
+				const selectedProject = globalProjects.find(p => p.name === selectedProjectName);
+				
+				if (!selectedProject) {
+					console.error('No project selected');
+					return;
+				}
+				
+				const projectKey = selectedProject.key;
 				try {
 					document.getElementById('env-spinner').style.opacity = 1;
+					document.getElementById('env-progress').style.display = 'none';
 					const environments = await fetchEnvironments(accessToken, projectKey);
 					const envSelect = document.getElementById('env-select');
 					envSelect.innerHTML = '';
 
-					environments.items.forEach((env) => {
+					environments.forEach((env) => {
 						const option = document.createElement('option');
 						option.value = env.key;
 						option.textContent = env.name;
@@ -503,6 +795,7 @@
 					console.error('Error fetching environments:', error);
 				} finally {
 					document.getElementById('env-spinner').style.opacity = 0;
+					document.getElementById('env-progress').style.display = 'none';
 				}
 			}
 
@@ -524,7 +817,16 @@
 					return;
 				}
 
-				const projectKey = document.getElementById('project-select').value;
+				// Get the selected project key from the display text
+				const selectedProjectName = document.getElementById('project-display-text').textContent;
+				const selectedProject = globalProjects.find(p => p.name === selectedProjectName);
+				
+				if (!selectedProject) {
+					console.error('No project selected');
+					return;
+				}
+				
+				const projectKey = selectedProject.key;
 				const envKey = document.getElementById('env-select').value;
 				const limit = 100;
 
@@ -641,6 +943,16 @@
 				if (accessToken) {
 					populateProjects();
 				}
+				
+				// Close dropdown when clicking outside
+				document.addEventListener('click', (event) => {
+					const dropdown = document.getElementById('project-dropdown');
+					const container = document.querySelector('.project-select-container');
+					
+					if (!container.contains(event.target)) {
+						dropdown.style.display = 'none';
+					}
+				});
 			});
 		</script>
 	</body>

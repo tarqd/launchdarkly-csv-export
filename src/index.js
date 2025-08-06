@@ -13,8 +13,7 @@ export default {
         const url = new URL(request.url);
 
         if (url.pathname === '/oauth/callback') {
-          
-
-        return new Response('Hello Wosrld!');
-    },
-};
+            return new Response('Hello World!');
+        }
+    }
+}
